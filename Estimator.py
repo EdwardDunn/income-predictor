@@ -15,7 +15,6 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import sys
 import tensorflow as tf
 
 # Number of samples that are to be propagated through the network

@@ -10,10 +10,13 @@ evaluation included.
 @version: 1.0.0.0
 '''
 
-import tensorflow as tf
-import os
-import cv2
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
+import os
+import sys
+import tensorflow as tf
 
 # Number of samples that are to be propagated through the network
 BATCH_SIZE = 200

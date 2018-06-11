@@ -5,6 +5,9 @@ Created on 6 Jun 2018
 '''
 
 import pandas as pd
+import FeatureLabels
+
+CSV_COLUMN_NAMES = get_feature_labels()
 
 DATA_PATH = "dataset.csv"
 
@@ -52,3 +55,71 @@ def get_data(testing_rows):
     testingFile.close()
     
     return train_path, test_path
+
+def load_data(testing_rows, labelName='emotion'):
+    """Returns the dataset as (trainFeatures, trainLabels), (testFeatures, testLabels)."""
+    print("Loading dataset")
+    
+    trainPath, testPath = get_data(testing_rows)
+
+    # Parse training CSV file
+    trainFile = pd.read_csv(trainPath, 
+                        names=CSV_COLUMN_NAMES, # Column names
+                         header=0) # Ignore the first row
+    
+    # Assign the DataFrames labels to trainLabels
+    # Delete the labels from DataFrame
+    # Assign remainder of the DataFrame to trainFeatures
+    trainFeatures, trainLabels = trainFile, trainFile.pop(labelName)
+    
+    # Parse testing CVS file
+    testFile = pd.read_csv(testPath, 
+                       names=CSV_COLUMN_NAMES, # Column names e
+                       header=0) # Ignore the first row
+    
+    # Assign the DataFrames labels to testLabels
+    # Delete the labels from DataFrame
+    # Assign remainder of the DataFrame to testFeatures
+    testFeatures, testLabels = testFile, testFile.pop(labelName)
+
+    return (trainFeatures, trainLabels), (testFeatures, testLabels)
+
+
+def train_input_fn(features, labels, BATCH_SIZE):
+    """An input function for training"""
+    print("Training on input")
+    
+    # Convert the inputs to a Dataset
+    # Converts the input features and labels into a tf.data.Dataset object
+    # This is a high level TensorFlow API for reading data and transforming it into a form that the train method requires 
+    dataset = tf.data.Dataset.from_tensor_slices((dict(features), labels))
+
+    # Shuffle randomises the order
+    # Buffer size must be more than the number of examples
+    # Multiple batches are created using the batch size, increasing this reduces the training time
+    dataset = dataset.shuffle(200).repeat().batch(BATCH_SIZE)
+
+    # Return the dataset.
+    return dataset
+
+
+def eval_input_fn(features, labels, BATCH_SIZE):
+    """An input function for evaluation or prediction"""
+    print("Evaluating input\n")
+    
+    features=dict(features)
+    if labels is None:
+        # No labels, use only features.
+        inputs = features
+    else:
+        inputs = (features, labels)
+
+    # Convert the inputs to a Dataset
+    dataset = tf.data.Dataset.from_tensor_slices(inputs)
+
+    # Batch the examples
+    assert BATCH_SIZE is not None, "BATCH_SIZE must not be None"
+    dataset = dataset.batch(BATCH_SIZE)
+
+    # Return the dataset.
+    return dataset

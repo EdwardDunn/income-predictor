@@ -17,9 +17,9 @@ from __future__ import print_function
 import os
 import tensorflow as tf
 
-from TrainingData import shuffle_dataset
-from TrainingData import get_dataset_num_rows
-import TrainingData
+import App.FeatureLabels
+import App.TrainingData
+
 
 # Number of samples that are to be propagated through the network
 BATCH_SIZE = 200

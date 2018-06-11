@@ -5,7 +5,9 @@ Created on 6 Jun 2018
 '''
 
 import pandas as pd
-import FeatureLabels
+
+import App.FeatureLabels
+
 
 CSV_COLUMN_NAMES = get_feature_labels()
 
@@ -20,7 +22,7 @@ def get_data(testing_rows):
     
     # data_path = "FeatureDetection/dataset.csv"         
     train_path = "trainingset.csv"
-    test_path = "Ftestingset.csv"
+    test_path = "testingset.csv"
     
     # Create training data set
     dataFile = open(DATA_PATH)

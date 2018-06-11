@@ -11,7 +11,7 @@ DATA_PATH = "dataset.csv"
 
 def shuffle_dataset():
     print("Shuffling dataset")
-    data_path = "dataset.csv"         
+    data_path = "adults.csv"         
     shuffled_data_path = "dataset-shuffled.csv"
 
     # Shuffle dataset

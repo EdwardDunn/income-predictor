@@ -5,6 +5,7 @@ Created on 9th June 2018
 
 Description:
 Module used for settings the labels of the features extracted from the dataset.
+Each label is an income band.
 
 '''
 

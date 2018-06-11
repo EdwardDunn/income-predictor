@@ -17,6 +17,10 @@ from __future__ import print_function
 import os
 import tensorflow as tf
 
+from TrainingData import shuffle_dataset
+from TrainingData import get_dataset_num_rows
+import TrainingData
+
 # Number of samples that are to be propagated through the network
 BATCH_SIZE = 200
 
@@ -30,9 +34,6 @@ K_FOLD_STEPS = 5
 MODEL_DIR = "./dnn-classifier1"
 
 def train_model_with_cross_validation():   
-    # Shuffle data set to ensure order is random
-    shuffle_dataset()
-    
     # Used to show average accuracy from all training
     finalAccuracy = 0.0
     
@@ -100,8 +101,8 @@ def run_estimator(testing_rows):
     # Get each feature from the FeatureLabels module and add it to the featureColumns array
     featureColumns = []  
     for feature in get_feature_labels():
-        # Ensure the label name 'emotion' is not used
-        if(feature != 'emotion'):
+        # Ensure the label name 'label' is not used
+        if(feature != 'label'):
             featureColumns.append(tf.feature_column.numeric_column(key=feature))
     
     # Using a fully connected neural network (deep neural network)
@@ -126,3 +127,52 @@ def run_estimator(testing_rows):
                                                 BATCH_SIZE))
     
     return evalResult
+
+def analyse_test_adult(adultVector):      
+       
+    # Get test vector to be used with the predict inputs
+    # TODO - pass in the adult data vector here (possibly as array)
+    testFeaturesArr = adultVector
+       
+    # Predict these inputs
+    predictInputs = {}
+    
+    # Used for adding each element of the testFeaturesArr image vector
+    featureCounter = 0
+    
+    ## Get each feature label and add the feature value from the test image vector
+    for feature in get_feature_labels():
+        predictInputs.update({ feature : [testFeaturesArr[featureCounter]], })
+        featureCounter += 1
+        
+    featureColumns = []  
+    for feature in get_feature_labels():
+        # Ensure the label name 'label' is not used
+        if(feature != 'label'):
+            featureColumns.append(tf.feature_column.numeric_column(key=feature))
+    
+    # Call the estimators predict function to predict the predictions
+    # Batct_size states the number of prediction steps to take 
+    # The file path is used to retrieve the trained classifier
+    classifier = tf.estimator.DNNClassifier(
+        feature_columns=featureColumns,
+        # Three hidden layers 
+        hidden_units=[60, 40, 20],
+        # The model must choose between 7 classes.
+        n_classes=7, model_dir=MODEL_DIR)
+    
+    predictions = classifier.predict(
+        input_fn=lambda:TrainingData.eval_input_fn(predictInputs,
+                                                labels=None,
+                                                BATCH_SIZE=BATCH_SIZE))
+    
+    # Go through each prediction and expected result, output results          
+    for prediction in predictions:
+        template = ('\nPrediction is "{}" ({:.1f}%)')
+    
+        class_id = prediction['class_ids'][0]
+        probability = prediction['probabilities'][class_id]
+                       
+        print(template.format(TrainingData.EMOTIONS[class_id],
+                              100 * probability))
+

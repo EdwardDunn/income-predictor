@@ -8,23 +8,22 @@ Module used for settings the labels of the features extracted from the dataset.
 Each label is an income band.
 
 '''
-
     
 def get_feature_labels():
     featureLabels = []
     
     featureLabels.append('<= 10.000')
- 
+    
     featureLabels.append('<= 20.000')
-
+    
     featureLabels.append('<= 30.000')
-
+    
     featureLabels.append('<= 40.000')
-
+    
     featureLabels.append('<= 50.000')
-
+    
     featureLabels.append('> 50.000')     
     
     featureLabels.append('label')
-
+    
     return featureLabels

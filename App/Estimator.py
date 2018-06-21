@@ -1,13 +1,12 @@
 '''
 Created on 6 Jun 2018
 
+@author: Edward Dunn
+
 Description:
 Module used to create a deep neural network using TensorFlow. Functions for cross-validation and
 evaluation included.
 
-@author: Edward Dunn
-
-@version: 1.0.0.0
 '''
 
 from __future__ import absolute_import
